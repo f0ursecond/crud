@@ -1,4 +1,5 @@
 import 'package:cherry_toast/cherry_toast.dart';
+import 'package:crud/page/settings.dart';
 
 import 'package:crud/provider/quran_provider.dart';
 
@@ -10,8 +11,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 import '../provider/app_color.dart';
+import 'components/all.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -33,25 +37,19 @@ class _HomePageState extends State<HomePage> {
       final hasInternet = status == InternetConnectionStatus.connected;
       setState(() => this.hasInternet = hasInternet);
       if (!hasInternet) {
-        return CherryToast.error(
-          title: const Text(
-            'No Internet Connection',
-            style: TextStyle(
-              color: Colors.red,
-            ),
+        return showTopSnackBar(
+          context,
+          const CustomSnackBar.error(
+            message: "No Internet!",
           ),
-          action: const Text(
-            'Please Try Again Later',
-            style: TextStyle(color: Colors.black),
-          ),
-          actionHandler: () {},
-        ).show(context);
+        );
       } else {
-        return CherryToast.success(
-          title: const Text('  Connected'),
-          action: const Text('/merasa senang'),
-          actionHandler: () {},
-        ).show(context);
+        return showTopSnackBar(
+          context,
+          const CustomSnackBar.success(
+            message: "Connected",
+          ),
+        );
       }
     });
   }
@@ -74,283 +72,22 @@ class _HomePageState extends State<HomePage> {
               length: 4,
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          'ٱلسَّلَامُ عَلَيْكُمْ',
-                          style: GoogleFonts.amiri(
-                            color: tColor.warna,
-                            fontSize: 20,
-                            letterSpacing: 1,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Color(0xFFDF98FA),
-                              Color(0xFF9055FF),
-                            ],
-                          ),
-                          borderRadius: BorderRadius.circular(10)),
-                      height: 131,
-                      width: 326,
-                      child: Stack(
-                        children: [
-                          Image.asset(
-                            'assets/images/kitab.png',
-                            fit: BoxFit.contain,
-                            width: 50.sp,
-                            height: 40.sp,
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: TabBar(
-                              labelStyle: TextStyle(fontSize: 15.sp),
-                              indicator: UnderlineTabIndicator(
-                                  borderSide: BorderSide(width: 1.0),
-                                  insets:
-                                      EdgeInsets.symmetric(horizontal: 16.0)),
-                              labelColor: tColor.warna,
-                              indicatorColor: tColor.warna,
-                              tabs: const [
-                                Tab(
-                                  text: 'Surah',
-                                ),
-                                Tab(
-                                  text: 'Para',
-                                ),
-                                Tab(
-                                  text: 'Page',
-                                ),
-                                Tab(
-                                  text: 'Hijb',
-                                )
-                              ]),
-                        ),
-                      ],
-                    ),
-                    Expanded(
-                      child: TabBarView(children: [
-                        Consumer<QuranProvider>(
-                          builder: ((context, QuranProvider, child) =>
-                              FutureBuilder(
-                                future: QuranService().getAll(),
-                                builder: ((context, index) {
-                                  var value = QuranProvider;
-                                  final product = value.alquran;
-                                  if (index.error != null && !hasInternet) {
-                                    return Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Container(
-                                              height: 20,
-                                              width: 20,
-                                              child: CircularProgressIndicator(
-                                                color: tColor.warna,
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              height: 20,
-                                            ),
-                                            Text(
-                                              'Check Your Connection & Try Again',
-                                              style: TextStyle(
-                                                color: tColor.warna,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    );
-                                  }
-                                  if (index.connectionState ==
-                                      ConnectionState.waiting) {
-                                    return Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Container(
-                                              height: 20,
-                                              width: 20,
-                                              child: CircularProgressIndicator(
-                                                color: tColor.warna,
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              height: 20,
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    );
-                                  } else {
-                                    print('AKHIRNYA BISA COKK');
-
-                                    return AnimationLimiter(
-                                      child: ListView.separated(
-                                        separatorBuilder: (context, index) {
-                                          return Divider(
-                                            color: Colors.grey[100],
-                                            thickness: 0.2,
-                                          );
-                                        },
-                                        itemCount: value.alquran.length,
-                                        itemBuilder: ((context, index) {
-                                          final asu = product[index];
-                                          return AnimationConfiguration
-                                              .staggeredGrid(
-                                            duration: const Duration(
-                                                milliseconds: 100),
-                                            columnCount: index,
-                                            position: index,
-                                            child: SlideAnimation(
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 3.0),
-                                                child: FadeInAnimation(
-                                                  child: ListTile(
-                                                    isThreeLine: false,
-                                                    onTap: () {},
-                                                    dense: true,
-                                                    contentPadding:
-                                                        const EdgeInsets
-                                                                .symmetric(
-                                                            horizontal: 5),
-                                                    leading: Container(
-                                                      width: 35,
-                                                      height: 35,
-                                                      decoration: const BoxDecoration(
-                                                          image: DecorationImage(
-                                                              image: AssetImage(
-                                                                  'assets/images/leading.png'))),
-                                                      child: Center(
-                                                        child: Text(
-                                                          '${asu.nomor}',
-                                                          style: GoogleFonts
-                                                              .poppins(
-                                                                  color: tColor
-                                                                      .warna,
-                                                                  fontSize:
-                                                                      14.sp,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    trailing: Text(
-                                                      '${asu.nama}',
-                                                      style: GoogleFonts.amiri(
-                                                        color: tColor.warna,
-                                                        fontSize: 17.sp,
-                                                        letterSpacing: 0.5,
-                                                        fontWeight:
-                                                            FontWeight.w400,
-                                                      ),
-                                                    ),
-                                                    title: Text(
-                                                      asu.nama_latin,
-                                                      style:
-                                                          GoogleFonts.poppins(
-                                                        color: tColor.warna,
-                                                        fontSize: 16.sp,
-                                                        letterSpacing: 0.5,
-                                                        fontWeight:
-                                                            FontWeight.w400,
-                                                      ),
-                                                    ),
-                                                    subtitle: Row(
-                                                      children: [
-                                                        Text(
-                                                          '${asu.jumlah_ayat} AYAT ',
-                                                          style: GoogleFonts
-                                                              .poppins(
-                                                            color: Colors.grey,
-                                                            fontSize: 14.sp,
-                                                            fontWeight:
-                                                                FontWeight.w300,
-                                                          ),
-                                                        ),
-                                                        Text(
-                                                          '| ${asu.tempat_turun.toUpperCase()}',
-                                                          style: GoogleFonts
-                                                              .poppins(
-                                                            color: Colors.grey,
-                                                            fontSize: 14.sp,
-                                                            fontWeight:
-                                                                FontWeight.w400,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          );
-                                        }),
-                                      ),
-                                    );
-                                  }
-                                }),
-                              )),
-                        ),
-                        Center(
-                          child: Container(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                color: tColor.warna,
-                              )),
-                        ),
-                        Center(
-                          child: Container(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                color: tColor.warna,
-                              )),
-                        ),
-                        Center(
-                          child: Container(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                color: tColor.warna,
-                              )),
-                        ),
-                      ]),
-                    )
-                  ],
-                ),
+                child: all(hasInternet: hasInternet),
+              ),
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const Settings(),
+                  ),
+                );
+              },
+              backgroundColor: appColor.color,
+              child: Icon(
+                Icons.settings,
+                color: tColor.warna,
               ),
             ),
           )),

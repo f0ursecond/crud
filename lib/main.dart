@@ -1,7 +1,9 @@
 import 'package:crud/page/loginpage.dart';
 import 'package:crud/provider/app_color.dart';
-import 'package:crud/provider/product_provider.dart';
+
 import 'package:crud/provider/quran_provider.dart';
+
+import 'package:crud/provider/uiset.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
@@ -25,21 +27,15 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => appColor()),
         ChangeNotifierProvider(create: (context) => tColor()),
-        ChangeNotifierProvider(create: (context) => ProductProvider()),
-        ChangeNotifierProvider(create: (context) => QuranProvider())
+        ChangeNotifierProvider(create: (context) => QuranProvider()),
+        ChangeNotifierProvider(create: (context) => anjaySize()),
       ],
       child: ResponsiveSizer(
         builder: (p0, p1, p2) => MaterialApp(
             debugShowCheckedModeBanner: false,
-            home: loginPage(),
+            home: const loginPage(),
             theme: ThemeData.from(
-              colorScheme: ColorScheme.light(),
-            ).copyWith(
-              pageTransitionsTheme: const PageTransitionsTheme(
-                builders: <TargetPlatform, PageTransitionsBuilder>{
-                  TargetPlatform.android: ZoomPageTransitionsBuilder(),
-                },
-              ),
+              colorScheme: const ColorScheme.light(),
             )),
       ),
     );

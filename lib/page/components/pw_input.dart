@@ -22,10 +22,10 @@ class _PasswordState extends State<Password> {
     return anjay(
       child: Consumer2<appColor, tColor>(
         builder: ((context, appColor, tColor, child) => TextField(
-            style: TextStyle(color: tColor.warna),
-            obscureText: _obsecureText,
-            cursorColor: tColor.warna,
-            decoration: InputDecoration(
+              style: TextStyle(color: tColor.warna),
+              obscureText: _obsecureText,
+              cursorColor: tColor.warna,
+              decoration: InputDecoration(
                 prefixIcon: Icon(
                   Icons.lock,
                   color: tColor.warna,
@@ -61,7 +61,9 @@ class _PasswordState extends State<Password> {
                   borderRadius: BorderRadius.circular(5.0),
                 ),
                 hintText: widget.hint,
-                hintStyle: (TextStyle(color: tColor.warna))))),
+                hintStyle: (TextStyle(color: tColor.warna)),
+              ),
+            )),
       ),
     );
   }
